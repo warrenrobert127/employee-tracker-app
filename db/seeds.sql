@@ -13,4 +13,6 @@ VALUES('Regional Manager', 90000, 1),
 INSERT INTO employees(first_name, last_name)
 VALUES('Kyle', 'Schwarber'),
 ('Calvin', 'Brodous'),
+('Pauly', 'Wallnuts', 4, 5),
+('Tony', 'Soprano', 7, NULL),
 ('Curtis', 'Jackson');
