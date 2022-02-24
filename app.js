@@ -159,4 +159,100 @@ const addRole = () => {
   });
 };
 
+const addEmployee = () => {
+  const roleQuery =
+    'SELECT * from roles; SELECT CONCAT (e.first_name," ",e.last_name) AS full_name FROM employees e';
+  const addEmployeeQuestions = [
+    "What is the first name?",
+    "What is the last name?",
+    "What is their role?",
+    "Who is their manager?",
+  ];
+
+  connection.query(roleQuery, (err, results) => {
+    if (err) throw err;
+
+    inquirer
+      .prompt([
+        {
+          name: "fName",
+          type: "input",
+          message: addEmployeeQuestions[0],
+        },
+        {
+          name: "lName",
+          type: "input",
+          message: addEmployeeQuestions[1],
+        },
+        {
+          name: "role",
+          type: "list",
+          choices: function () {
+            let choiceArray = results[0].map((choice) => choice.title);
+            return choiceArray;
+          },
+          message: addEmployeeQuestions[2],
+        },
+        {
+          name: "manager",
+          type: "list",
+          choices: function () {
+            let choiceArray = results[1].map((choice) => choice.full_name);
+            return choiceArray;
+          },
+          message: addEmployeeQuestions[3],
+        },
+      ])
+      .then((answer) => {
+        connection.query(
+          `INSERT INTO employees(first_name, last_name, role_id, manager_id) VALUES(?, ?, 
+                (SELECT id FROM roles WHERE title = ? ), 
+                (SELECT id FROM (SELECT id FROM employees WHERE CONCAT(first_name," ",last_name) = ? ) AS tmptable))`,
+          [answer.fName, answer.lName, answer.role, answer.manager]
+        );
+        startApp();
+      });
+  });
+};
+
+const updateRole = () => {
+  const query = `SELECT CONCAT (first_name," ",last_name) AS full_name FROM employees; SELECT title FROM roles`;
+  connection.query(query, (err, results) => {
+    if (err) throw err;
+
+    inquirer
+      .prompt([
+        {
+          name: "empl",
+          type: "list",
+          choices: function () {
+            let choiceArray = results[0].map((choice) => choice.full_name);
+            return choiceArray;
+          },
+          message: "Select an employee to update their role:",
+        },
+        {
+          name: "newRole",
+          type: "list",
+          choices: function () {
+            let choiceArray = results[1].map((choice) => choice.title);
+            return choiceArray;
+          },
+        },
+      ])
+      .then((answer) => {
+        connection.query(
+          `UPDATE employees 
+            SET role_id = (SELECT id FROM roles WHERE title = ? ) 
+            WHERE id = (SELECT id FROM(SELECT id FROM employees WHERE CONCAT(first_name," ",last_name) = ?) AS tmptable)`,
+          [answer.newRole, answer.empl],
+          (err, results) => {
+            if (err) throw err;
+            startApp();
+          }
+        );
+      });
+  });
+};
+
 startApp();
