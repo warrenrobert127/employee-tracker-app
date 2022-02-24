@@ -29,6 +29,8 @@ Robert Warren
 ### GitHub Repository Link
 ![github link](https://github.com/warrenrobert127/employee-tracker-app)
 
+
+### Video Walkthrough Link
 ![Video link](https://user-images.githubusercontent.com/20363030/155457365-7ff6c210-37e7-42b4-aa5e-e1eff19297b6.mp4)
 
 ## features
