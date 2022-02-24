@@ -232,7 +232,45 @@ const addEmp = () => {
 };
 
 // update an employee role
+const updateEmpRole = () => {
+  const query = `SELECT CONCAT (first_name," ",last_name) AS full_name FROM employee; SELECT title FROM role`;
+  db.query(query, (err, results) => {
+    if (err) throw err;
 
+    inquirer
+      .prompt([
+        {
+          name: "empl",
+          type: "list",
+          choices: function () {
+            let choiceArray = results[0].map((choice) => choice.full_name);
+            return choiceArray;
+          },
+          message: "Select an employee to update their role:",
+        },
+        {
+          name: "newRole",
+          type: "list",
+          choices: function () {
+            let choiceArray = results[1].map((choice) => choice.title);
+            return choiceArray;
+          },
+        },
+      ])
+      .then((answer) => {
+        db.query(
+          `UPDATE employee 
+            SET role_id = (SELECT id FROM role WHERE title = ? ) 
+            WHERE id = (SELECT id FROM(SELECT id FROM employee WHERE CONCAT(first_name," ",last_name) = ?) AS tmptable)`,
+          [answer.newRole, answer.empl],
+          (err, results) => {
+            if (err) throw err;
+            setTimeout(promptUser, 1000);
+          }
+        );
+      });
+  });
+};
 
 module.exports = promptUser;
 

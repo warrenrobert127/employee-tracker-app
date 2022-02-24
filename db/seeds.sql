@@ -11,8 +11,8 @@ VALUES('Regional Manager', 90000, 1),
 ('HR Rep', 50000, 4);
 
 INSERT INTO employees(first_name, last_name)
-VALUES('Kyle', 'Schwarber'),
-('Calvin', 'Brodous'),
-('Pauly', 'Wallnuts', 4, 5),
-('Tony', 'Soprano', 7, NULL),
-('Curtis', 'Jackson');
+VALUES('Tony', 'Rizzo', 1, Null),
+('Vince', 'BamBam', 2, 1),
+('Pauly', 'Wallnuts',3, 1),
+('Tony', 'Soprano', 2, Null),
+('Curtis', 'Jackson', Null, Null);
